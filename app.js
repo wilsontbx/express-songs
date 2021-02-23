@@ -104,13 +104,42 @@ app.delete("/songs/:id", (req, res) => {
 
 const movies = [];
 
+app.param("movieID", (req, res, next, movieID) => {
+    const movie = movies.find((movie) => movie.id === parseInt(movieID));
+    req.movie = movie;
+    next();
+});
+
 app.post("/movies", (req, res) => {
     movies.push({
         id: movies.length + 1,
-        name: req.body.name,
+        movieName: req.body.movieName,
     });
-    console.log(movies);
     res.status(201).json(movies);
+});
+
+app.get("/movies", (req, res) => {
+    res.status(200).json(movies);
+});
+
+app.put("/movies/:movieID", (req, res) => {
+    const idFind = movies.findIndex(
+        (element) => element.id === parseInt(req.movie.id)
+    );
+
+    movies[idFind].movieName = req.body.movieName;
+
+    res.status(200).json(movies);
+});
+
+app.delete("/movies/:movieID", (req, res) => {
+    const idFind = movies.findIndex(
+        (element) => element.id === parseInt(req.movie.id)
+    );
+
+    const moviesDeleted = movies.splice(idFind, idFind < 0 ? 0 : 1);
+
+    res.status(200).json(moviesDeleted);
 });
 
 module.exports = app;
