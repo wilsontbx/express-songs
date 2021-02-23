@@ -55,7 +55,6 @@ app.get("/songs/:id", (req, res) => {
     const id = req.params.id;
     const songsFilter = songs.filter((element) => element.id == id);
     res.statusCode = 200;
-    console.log(songsFilter);
     res.json(songsFilter);
 });
 
@@ -91,9 +90,7 @@ app.put("/songs/:id", (req, res) => {
     songs[idFind].artist = req.body.artist;
 
     res.statusCode = 200;
-    res.json({
-        songs: songs[idFind],
-    });
+    res.json(songs[idFind]);
 });
 
 app.delete("/songs/:id", (req, res) => {
@@ -101,11 +98,10 @@ app.delete("/songs/:id", (req, res) => {
     let idDelete = songs.findIndex((element) => element.id === parseInt(id));
     const songsFilter = songs.splice(idDelete, idDelete < 0 ? 0 : 1);
 
+    let songRes = songsFilter[0];
+    console.log(songRes);
     res.statusCode = 200;
-    res.json({
-        songsDelete: songsFilter,
-        songs: songs,
-    });
+    res.json(songRes);
 });
 
 module.exports = app;
