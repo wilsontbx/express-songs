@@ -30,10 +30,8 @@ app.post("/", requireJsonContent, (req, res) => {
 });
 
 app.param("id", (req, res, next, id) => {
-    const name = "TomSong";
-    const artist = "Tom";
-    const data = { id, name, artist };
-    req.id = data;
+    let song = songs.find((song) => song.id === parseInt(id));
+    req.song = song;
     next();
 });
 
@@ -83,8 +81,9 @@ app.post("/songs", (req, res) => {
 });
 
 app.put("/songs/:id", (req, res) => {
-    const id = req.params.id;
-    const idFind = songs.findIndex((element) => element.id === parseInt(id));
+    const idFind = songs.findIndex(
+        (element) => element.id === parseInt(req.song.id)
+    );
 
     songs[idFind].name = req.body.name;
     songs[idFind].artist = req.body.artist;
@@ -94,12 +93,11 @@ app.put("/songs/:id", (req, res) => {
 });
 
 app.delete("/songs/:id", (req, res) => {
-    const id = req.params.id;
-    let idDelete = songs.findIndex((element) => element.id === parseInt(id));
+    let idDelete = songs.findIndex(
+        (element) => element.id === parseInt(req.song.id)
+    );
     const songsFilter = songs.splice(idDelete, idDelete < 0 ? 0 : 1);
-
     let songRes = songsFilter[0];
-    console.log(songRes);
     res.statusCode = 200;
     res.json(songRes);
 });
