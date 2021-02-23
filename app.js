@@ -102,4 +102,15 @@ app.delete("/songs/:id", (req, res) => {
     res.json(songRes);
 });
 
+const movies = [];
+
+app.post("/movies", (req, res) => {
+    movies.push({
+        id: movies.length + 1,
+        name: req.body.name,
+    });
+    console.log(movies);
+    res.status(201).json(movies);
+});
+
 module.exports = app;
