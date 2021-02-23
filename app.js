@@ -139,7 +139,7 @@ app.delete("/movies/:movieID", (req, res) => {
 
     const moviesDeleted = movies.splice(idFind, idFind < 0 ? 0 : 1);
 
-    res.status(200).json(moviesDeleted);
+    res.status(200).json(moviesDeleted[0]);
 });
 
 module.exports = app;

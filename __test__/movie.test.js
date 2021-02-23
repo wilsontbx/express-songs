@@ -43,12 +43,10 @@ describe("App", () => {
 
   it("DELETE / should response correctly", async () => {
     const { body } = await request(app).delete("/movies/1").expect(200);
-    expect(body).toEqual([
-      {
-        id: 1,
-        movieName: "Frozen 2",
-      },
-    ]);
+    expect(body).toEqual({
+      id: 1,
+      movieName: "Frozen 2",
+    });
   });
 
   it("GET / should response correctly", async () => {
