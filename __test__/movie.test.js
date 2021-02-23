@@ -8,12 +8,10 @@ describe("App", () => {
       .send({ movieName: "Lion King" })
       .expect(201);
 
-    expect(body).toEqual([
-      {
-        id: 1,
-        movieName: "Lion King",
-      },
-    ]);
+    expect(body).toEqual({
+      id: 1,
+      movieName: "Lion King",
+    });
   });
 
   it("GET / should response correctly", async () => {
@@ -33,12 +31,10 @@ describe("App", () => {
         movieName: "Frozen 2",
       })
       .expect(200);
-    expect(body).toEqual([
-      {
-        id: 1,
-        movieName: "Frozen 2",
-      },
-    ]);
+    expect(body).toEqual({
+      id: 1,
+      movieName: "Frozen 2",
+    });
   });
 
   it("DELETE / should response correctly", async () => {

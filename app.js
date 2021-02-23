@@ -115,7 +115,7 @@ app.post("/movies", (req, res) => {
         id: movies.length + 1,
         movieName: req.body.movieName,
     });
-    res.status(201).json(movies);
+    res.status(201).json(movies[movies.length - 1]);
 });
 
 app.get("/movies", (req, res) => {
@@ -129,7 +129,7 @@ app.put("/movies/:movieID", (req, res) => {
 
     movies[idFind].movieName = req.body.movieName;
 
-    res.status(200).json(movies);
+    res.status(200).json(movies[idFind]);
 });
 
 app.delete("/movies/:movieID", (req, res) => {
