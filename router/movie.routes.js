@@ -1,7 +1,16 @@
 const express = require("express");
 const router = express.Router();
+const Joi = require("joi");
 
 const movies = [];
+
+function validateMovie(movie) {
+  const schema = Joi.object({
+    id: Joi.number().integer(),
+    movieName: Joi.string().min(1).required(),
+  });
+  return schema.validate(movie);
+}
 
 router.param("movieID", (req, res, next, movieID) => {
   const movie = movies.find((movie) => movie.id === parseInt(movieID));
@@ -10,6 +19,13 @@ router.param("movieID", (req, res, next, movieID) => {
 });
 
 router.post("/", (req, res) => {
+  const validation = validateMovie(req.body);
+  if (validation.error) {
+    const error = new Error(validation.error.details[0].message);
+    error.statusCode = 400;
+    next(error);
+  }
+
   movies.push({
     id: movies.length + 1,
     movieName: req.body.movieName,
@@ -40,5 +56,8 @@ router.delete("/:movieID", (req, res) => {
 
   res.status(200).json(moviesDeleted[0]);
 });
-
+router.use((err, req, res, next) => {
+  res.statusCode = err.statusCode;
+  res.send(`${err}`);
+});
 module.exports = router;

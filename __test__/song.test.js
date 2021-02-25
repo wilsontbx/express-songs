@@ -47,4 +47,13 @@ describe("App", () => {
       artist: "anotherArtist",
     });
   });
+
+  it("POST / for testing error", async () => {
+    const { body } = await request(app)
+      .post("/songs")
+      .send({ name: "BOONXIAN" })
+      .expect(400);
+
+    expect(body).toEqual({});
+  });
 });

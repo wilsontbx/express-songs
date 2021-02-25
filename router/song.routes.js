@@ -1,5 +1,8 @@
 const express = require("express");
 const router = express.Router();
+const songController = require("../controllers/songControllers");
+const Joi = require("joi");
+require("../utils/db");
 
 const songs = [
   {
@@ -13,6 +16,15 @@ const songs = [
     artist: "anotherArtist",
   },
 ];
+
+function validateSong(song) {
+  const schema = Joi.object({
+    id: Joi.number().integer(),
+    name: Joi.string().min(3).required(),
+    artist: Joi.string().min(3).required(),
+  });
+  return schema.validate(song);
+}
 
 router.param("id", (req, res, next, id) => {
   let song = songs.find((song) => song.id === parseInt(id));
@@ -38,19 +50,40 @@ router.get("/:id", (req, res) => {
   });
 });
 
-router.post("/", (req, res) => {
-  const newSong = {
-    id: songs.length + 1,
-    name: req.body.name,
-    artist: req.body.artist,
-  };
-  res.statusCode = 201;
-  res.json({
-    songs: newSong,
-  });
+router.post("/", (req, res, next) => {
+  // const validation = validateSong(req.body);
+  // if (validation.error) {
+  //   const error = new Error(validation.error.details[0].message);
+  //   error.statusCode = 400;
+  //   next(error);
+  // }
+  // const newSong = {
+  //   id: songs.length + 1,
+  //   name: req.body.name,
+  //   artist: req.body.artist,
+  // };
+  // songs.push(newSong);
+  // res.statusCode = 201;
+  // res.json(newSong);
+  songController
+    .createOne({ name: req.body.name, artist: req.body.artist })
+    .then((result) => {
+      console.log(result);
+      res.statusCode = 201;
+      res.json(result);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 });
 
 router.put("/:id", (req, res) => {
+  const validation = validateSong(req.body);
+  if (validation.error) {
+    const error = new Error(validation.error.details[0].message);
+    error.statusCode = 400;
+    next(error);
+  }
   const idFind = songs.findIndex(
     (element) => element.id === parseInt(req.song.id)
   );
@@ -70,6 +103,11 @@ router.delete("/:id", (req, res) => {
   let songRes = songsFilter[0];
   res.statusCode = 200;
   res.json(songRes);
+});
+
+router.use((err, req, res, next) => {
+  res.statusCode = err.statusCode;
+  res.send(`${err}`);
 });
 
 module.exports = router;
