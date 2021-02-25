@@ -31,8 +31,8 @@ router.param("id", (req, res, next, id) => {
   // req.song = song;
   // next();
   songController.findById(id).then((result) => {
-    if (result._message) {
-      const error = new Error(result._message);
+    if (result?._message || !result) {
+      const error = new Error(result?._message || result);
       error.statusCode = 400;
       next(error);
     } else {
@@ -71,16 +71,11 @@ router.post("/", (req, res, next) => {
   //   const error = new Error(validation.error.details[0].message);
   //   error.statusCode = 400;
   //   next(error);
+  // } else {
   // }
-  // const newSong = {
-  //   id: songs.length + 1,
-  //   name: req.body.name,
-  //   artist: req.body.artist,
-  // };
-  // songs.push(newSong);
-  // res.statusCode = 201;
-  // res.json(newSong);
+
   songController.createOne(req.body).then((result) => {
+    console.log(result);
     if (result._message) {
       const error = new Error(result._message);
       error.statusCode = 400;
@@ -99,14 +94,6 @@ router.put("/:id", (req, res, next) => {
   //   error.statusCode = 400;
   //   next(error);
   // }
-  // const idFind = songs.findIndex(
-  //   (element) => element.id === parseInt(req.song.id)
-  // );
-  // songs[idFind].name = req.body.name;
-  // songs[idFind].artist = req.body.artist;
-  // res.statusCode = 200;
-  // res.json(songs[idFind]);
-
   songController.updateById(req.song.id, req.body).then((result) => {
     if (result._message) {
       const error = new Error(result._message);
@@ -120,13 +107,24 @@ router.put("/:id", (req, res, next) => {
 });
 
 router.delete("/:id", (req, res) => {
-  let idDelete = songs.findIndex(
-    (element) => element.id === parseInt(req.song.id)
-  );
-  const songsFilter = songs.splice(idDelete, idDelete < 0 ? 0 : 1);
-  let songRes = songsFilter[0];
-  res.statusCode = 200;
-  res.json(songRes);
+  // let idDelete = songs.findIndex(
+  //   (element) => element.id === parseInt(req.song.id)
+  // );
+  // const songsFilter = songs.splice(idDelete, idDelete < 0 ? 0 : 1);
+  // let songRes = songsFilter[0];
+  // res.statusCode = 200;
+  // res.json(songRes);
+
+  songController.deleteById(req.song.id).then((result) => {
+    if (result._message) {
+      const error = new Error(result._message);
+      error.statusCode = 400;
+      next(error);
+    } else {
+      res.statusCode = 200;
+      res.json(result);
+    }
+  });
 });
 
 router.use((err, req, res, next) => {

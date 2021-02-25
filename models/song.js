@@ -5,10 +5,12 @@ const SongSchema = new Schema({
   name: {
     type: String,
     required: true,
+    minlength: 1,
   },
   artist: {
     type: String,
     required: true,
+    minlength: 1,
   },
 });
 

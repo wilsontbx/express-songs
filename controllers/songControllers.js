@@ -30,13 +30,21 @@ const songController = {
     try {
       const updatedSong = await SongModel.findOneAndUpdate(id, body, {
         new: true,
+        runValidators: true,
       });
       return updatedSong;
     } catch (err) {
       return err;
     }
   },
-  deleteById: async (id, next) => {},
+  deleteById: async (id, next) => {
+    try {
+      const deletedSong = await SongModel.findOneAndDelete(id);
+      return deletedSong;
+    } catch (err) {
+      return err;
+    }
+  },
 };
 
 module.exports = songController;
