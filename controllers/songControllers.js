@@ -7,11 +7,25 @@ const songController = {
       await newSong.save();
       return newSong;
     } catch (err) {
-      console.log(err);
+      return err;
     }
   },
-  getAllSongs: async () => {},
-  findById: async () => {},
+  getAllSongs: async () => {
+    try {
+      const allSong = await SongModel.find();
+      return allSong;
+    } catch (err) {
+      return err;
+    }
+  },
+  findById: async (id) => {
+    try {
+      const findSong = await SongModel.findById(id);
+      return findSong;
+    } catch (err) {
+      return err;
+    }
+  },
   updateById: async (id, body, next) => {},
   deleteById: async (id, next) => {},
 };

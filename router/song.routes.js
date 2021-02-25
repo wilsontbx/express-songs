@@ -27,27 +27,42 @@ function validateSong(song) {
 }
 
 router.param("id", (req, res, next, id) => {
-  let song = songs.find((song) => song.id === parseInt(id));
-  req.song = song;
-  next();
+  // let song = songs.find((song) => song.id === parseInt(id));
+  // req.song = song;
+  // next();
+  songController.findById(id).then((result) => {
+    if (result._message) {
+      const error = new Error(result._message);
+      error.statusCode = 400;
+      next(error);
+    } else {
+      req.song = result;
+      next();
+    }
+  });
 });
 
 router.get("/", (req, res) => {
-  res.status(200).json(songs);
-});
-
-router.get("/:id", (req, res) => {
-  const id = req.params.id;
-  const songsFilter = songs.filter((element) => element.id == id);
-  res.statusCode = 200;
-  res.json(songsFilter);
-});
-
-router.get("/:id", (req, res) => {
-  res.statusCode = 200;
-  res.json({
-    songs: songs,
+  // res.status(200).json(songs);
+  songController.getAllSongs().then((result) => {
+    if (result._message) {
+      const error = new Error(result._message);
+      error.statusCode = 400;
+      next(error);
+    } else {
+      res.statusCode = 200;
+      res.json(result);
+    }
   });
+});
+
+router.get("/:id", (req, res) => {
+  // const id = req.params.id;
+  // const songsFilter = songs.filter((element) => element.id == id);
+  // res.statusCode = 200;
+  // res.json(songsFilter);
+  res.statusCode = 200;
+  res.json(req.song);
 });
 
 router.post("/", (req, res, next) => {
@@ -65,34 +80,32 @@ router.post("/", (req, res, next) => {
   // songs.push(newSong);
   // res.statusCode = 201;
   // res.json(newSong);
-  songController
-    .createOne({ name: req.body.name, artist: req.body.artist })
-    .then((result) => {
-      console.log(result);
+  songController.createOne(req.body).then((result) => {
+    if (result._message) {
+      const error = new Error(result._message);
+      error.statusCode = 400;
+      next(error);
+    } else {
       res.statusCode = 201;
       res.json(result);
-    })
-    .catch((err) => {
-      console.log(err);
-    });
+    }
+  });
 });
 
 router.put("/:id", (req, res) => {
-  const validation = validateSong(req.body);
-  if (validation.error) {
-    const error = new Error(validation.error.details[0].message);
-    error.statusCode = 400;
-    next(error);
-  }
-  const idFind = songs.findIndex(
-    (element) => element.id === parseInt(req.song.id)
-  );
-
-  songs[idFind].name = req.body.name;
-  songs[idFind].artist = req.body.artist;
-
-  res.statusCode = 200;
-  res.json(songs[idFind]);
+  // const validation = validateSong(req.body);
+  // if (validation.error) {
+  //   const error = new Error(validation.error.details[0].message);
+  //   error.statusCode = 400;
+  //   next(error);
+  // }
+  // const idFind = songs.findIndex(
+  //   (element) => element.id === parseInt(req.song.id)
+  // );
+  // songs[idFind].name = req.body.name;
+  // songs[idFind].artist = req.body.artist;
+  // res.statusCode = 200;
+  // res.json(songs[idFind]);
 });
 
 router.delete("/:id", (req, res) => {
@@ -107,6 +120,7 @@ router.delete("/:id", (req, res) => {
 
 router.use((err, req, res, next) => {
   res.statusCode = err.statusCode;
+  // console.log(err);
   res.send(`${err}`);
 });
 
