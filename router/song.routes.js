@@ -92,7 +92,7 @@ router.post("/", (req, res, next) => {
   });
 });
 
-router.put("/:id", (req, res) => {
+router.put("/:id", (req, res, next) => {
   // const validation = validateSong(req.body);
   // if (validation.error) {
   //   const error = new Error(validation.error.details[0].message);
@@ -106,6 +106,17 @@ router.put("/:id", (req, res) => {
   // songs[idFind].artist = req.body.artist;
   // res.statusCode = 200;
   // res.json(songs[idFind]);
+
+  songController.updateById(req.song.id, req.body).then((result) => {
+    if (result._message) {
+      const error = new Error(result._message);
+      error.statusCode = 400;
+      next(error);
+    } else {
+      res.statusCode = 201;
+      res.json(result);
+    }
+  });
 });
 
 router.delete("/:id", (req, res) => {
@@ -120,7 +131,6 @@ router.delete("/:id", (req, res) => {
 
 router.use((err, req, res, next) => {
   res.statusCode = err.statusCode;
-  // console.log(err);
   res.send(`${err}`);
 });
 

@@ -26,7 +26,16 @@ const songController = {
       return err;
     }
   },
-  updateById: async (id, body, next) => {},
+  updateById: async (id, body, next) => {
+    try {
+      const updatedSong = await SongModel.findOneAndUpdate(id, body, {
+        new: true,
+      });
+      return updatedSong;
+    } catch (err) {
+      return err;
+    }
+  },
   deleteById: async (id, next) => {},
 };
 
