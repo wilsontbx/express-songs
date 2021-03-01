@@ -2,20 +2,19 @@ const express = require("express");
 const router = express.Router();
 const songController = require("../controllers/songControllers");
 const Joi = require("joi");
-require("../utils/db");
 
-const songs = [
-  {
-    id: 1,
-    name: "someSongName",
-    artist: "someSongArtist",
-  },
-  {
-    id: 2,
-    name: "anotherSongName",
-    artist: "anotherArtist",
-  },
-];
+// const songs = [
+//   {
+//     id: 1,
+//     name: "someSongName",
+//     artist: "someSongArtist",
+//   },
+//   {
+//     id: 2,
+//     name: "anotherSongName",
+//     artist: "anotherArtist",
+//   },
+// ];
 
 function validateSong(song) {
   const schema = Joi.object({
