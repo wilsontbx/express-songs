@@ -1,7 +1,6 @@
 const request = require("supertest");
 const app = require("../app");
 const SongModel = require("../models/song");
-// const { teardownMongoose } = require("../test/mongoose");
 const dbHandlers = require("../test/dbHandler");
 
 describe("Song", () => {
@@ -100,9 +99,9 @@ describe("Song", () => {
     expect(response.body).toMatchObject(expectedSongsData);
   });
 
-  it("POST /able create new song", async () => {
-    const song = await SongModel.findOne({ name: "song 1" });
-    const response = await request(app).get(`/songs/${song.id}`).expect(200);
-    expect(response.body.name).toEqual("song 1");
-  });
+  // it("POST /able create new song", async () => {
+  //   const song = await SongModel.findOne({ name: "song 1" });
+  //   const response = await request(app).get(`/songs/${song.id}`).expect(200);
+  //   expect(response.body.name).toEqual("song 1");
+  // });
 });
