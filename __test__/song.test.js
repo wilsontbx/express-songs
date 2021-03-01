@@ -85,11 +85,24 @@ describe("Song", () => {
     expect(response.body.name).toEqual("song 1");
   });
 
-  // it("should respond correctly to a GET request with song name", async () => {
-  //   const { body } = await request(app).get("/songs/My Way").expect(200);
-  //   expect(body).toMatchObject({
-  //     name: "My Way",
-  //     artist: "Frank Sinatra",
-  //   });
-  // });
+  it("GET should respond with all songs", async () => {
+    const expectedSongsData = [
+      {
+        name: "song 1",
+        artist: "artist 1",
+      },
+      {
+        name: "song 2",
+        artist: "artist 2",
+      },
+    ];
+    const response = await request(app).get("/songs").expect(200);
+    expect(response.body).toMatchObject(expectedSongsData);
+  });
+
+  it("POST /able create new song", async () => {
+    const song = await SongModel.findOne({ name: "song 1" });
+    const response = await request(app).get(`/songs/${song.id}`).expect(200);
+    expect(response.body.name).toEqual("song 1");
+  });
 });
