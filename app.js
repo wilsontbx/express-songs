@@ -26,6 +26,9 @@ app.use("/songs", songRouter);
 const movieRouter = require("./src/router/movie.routes");
 app.use("/movies", movieRouter);
 
+const userRouter = require("./src/router/user.routes");
+app.use("/user", userRouter);
+
 // app.use((req, res, next) => {
 //     console.log("common middleware songs is called");
 //     next();
