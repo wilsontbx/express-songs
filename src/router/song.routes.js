@@ -70,22 +70,13 @@ router.put("/:id", protectRoute, (req, res, next) => {
   });
 });
 
-router.delete("/:id", protectRoute, (req, res) => {
-  songController.deleteById(req.song.id).then((result) => {
-    if (result._message) {
-      const error = new Error(result._message);
-      error.statusCode = 400;
-      next(error);
-    } else {
-      res.statusCode = 200;
-      res.json(result);
-    }
-  });
-});
-
-router.use((err, req, res, next) => {
-  res.statusCode = err.statusCode;
-  res.send(`${err}`);
+router.delete("/:id", protectRoute, async (req, res, next) => {
+  try {
+    const deletedSong = await songController.deleteById(req.song.id, next);
+    res.status(200).json(deletedSong);
+  } catch (err) {
+    next(err);
+  }
 });
 
 router.use((err, req, res, next) => {

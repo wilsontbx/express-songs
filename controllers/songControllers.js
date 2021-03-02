@@ -1,7 +1,7 @@
 const SongModel = require("../models/song");
 
 const songController = {
-  createOne: async (song) => {
+  createOne: async (song, next) => {
     try {
       const newSong = new SongModel(song);
       await newSong.save();
@@ -10,7 +10,7 @@ const songController = {
       return err;
     }
   },
-  getAllSongs: async () => {
+  getAllSongs: async (next) => {
     try {
       const allSong = await SongModel.find();
       return allSong;
@@ -42,7 +42,7 @@ const songController = {
       const deletedSong = await SongModel.findOneAndDelete(id);
       return deletedSong;
     } catch (err) {
-      return err;
+      next(err);
     }
   },
 };
