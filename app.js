@@ -1,6 +1,9 @@
 const express = require("express");
+const cookieParser = require("cookie-parser");
 const app = express();
+
 app.use(express.json());
+app.use(cookieParser());
 
 const requireJsonContent = (req, res, next) => {
   if (req.headers["content-type"] !== "application/json") {

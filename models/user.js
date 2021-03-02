@@ -22,15 +22,15 @@ const UserSchema = new mongoose.Schema({
   },
 });
 
-trainerSchema.virtual("fullName").get(function () {
+UserSchema.virtual("fullName").get(function () {
   return `${this.salutation} ${this.firstName} ${this.lastName}`;
 });
 
-trainerSchema.virtual("reverseName").get(function () {
+UserSchema.virtual("reverseName").get(function () {
   return `${this.lastName}, ${this.firstName}`;
 });
 
-trainerSchema.pre("save", async function () {
+UserSchema.pre("save", async function () {
   if (this.isModified("password")) {
     const rounds = 10;
     this.password = await bcrypt.hash(this.password, rounds);
