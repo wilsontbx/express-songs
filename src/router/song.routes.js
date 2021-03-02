@@ -2,20 +2,7 @@ const express = require("express");
 const router = express.Router();
 const songController = require("../../controllers/songControllers");
 const Joi = require("joi");
-const jwt = require("jsonwebtoken");
-
-// const songs = [
-//   {
-//     id: 1,
-//     name: "someSongName",
-//     artist: "someSongArtist",
-//   },
-//   {
-//     id: 2,
-//     name: "anotherSongName",
-//     artist: "anotherArtist",
-//   },
-// ];
+const protectRoute = require("../middleware/protectorRoute");
 
 function validateSong(song) {
   const schema = Joi.object({
@@ -27,9 +14,6 @@ function validateSong(song) {
 }
 
 router.param("id", (req, res, next, id) => {
-  // let song = songs.find((song) => song.id === parseInt(id));
-  // req.song = song;
-  // next();
   songController.findById(id).then((result) => {
     if (result?._message || !result) {
       const error = new Error(result?._message || result);
@@ -43,7 +27,6 @@ router.param("id", (req, res, next, id) => {
 });
 
 router.get("/", (req, res) => {
-  // res.status(200).json(songs);
   songController.getAllSongs().then((result) => {
     if (result._message) {
       const error = new Error(result._message);
@@ -57,25 +40,12 @@ router.get("/", (req, res) => {
 });
 
 router.get("/:id", (req, res) => {
-  // const id = req.params.id;
-  // const songsFilter = songs.filter((element) => element.id == id);
-  // res.statusCode = 200;
-  // res.json(songsFilter);
   res.statusCode = 200;
   res.json(req.song);
 });
 
 router.post("/", (req, res, next) => {
-  // const validation = validateSong(req.body);
-  // if (validation.error) {
-  //   const error = new Error(validation.error.details[0].message);
-  //   error.statusCode = 400;
-  //   next(error);
-  // } else {
-  // }
-
   songController.createOne(req.body).then((result) => {
-    console.log(result);
     if (result._message) {
       const error = new Error(result._message);
       error.statusCode = 400;
@@ -88,12 +58,6 @@ router.post("/", (req, res, next) => {
 });
 
 router.put("/:id", protectRoute, (req, res, next) => {
-  // const validation = validateSong(req.body);
-  // if (validation.error) {
-  //   const error = new Error(validation.error.details[0].message);
-  //   error.statusCode = 400;
-  //   next(error);
-  // }
   songController.updateById(req.song.id, req.body).then((result) => {
     if (result._message) {
       const error = new Error(result._message);
@@ -107,14 +71,6 @@ router.put("/:id", protectRoute, (req, res, next) => {
 });
 
 router.delete("/:id", protectRoute, (req, res) => {
-  // let idDelete = songs.findIndex(
-  //   (element) => element.id === parseInt(req.song.id)
-  // );
-  // const songsFilter = songs.splice(idDelete, idDelete < 0 ? 0 : 1);
-  // let songRes = songsFilter[0];
-  // res.statusCode = 200;
-  // res.json(songRes);
-
   songController.deleteById(req.song.id).then((result) => {
     if (result._message) {
       const error = new Error(result._message);
@@ -131,23 +87,6 @@ router.use((err, req, res, next) => {
   res.statusCode = err.statusCode;
   res.send(`${err}`);
 });
-
-//*********************************/
-
-function protectRoute(req, res, next) {
-  try {
-    if (!req.cookies.token) {
-      const err = new Error("You are not authorized");
-      next(err);
-    } else {
-      req.user = jwt.verify(req.cookies.token, process.env.JWT_SECRET_KEY);
-      next();
-    }
-  } catch (err) {
-    err.statusCode = 401;
-    next(err);
-  }
-}
 
 router.use((err, req, res, next) => {
   res.statusCode = err.statusCode;
