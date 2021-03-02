@@ -17,10 +17,10 @@ app.post("/", requireJsonContent, (req, res) => {
   res.status(201).send("Thanks for the JSON!");
 });
 
-const songRouter = require("./router/song.routes");
+const songRouter = require("./src/router/song.routes");
 app.use("/songs", songRouter);
 
-const movieRouter = require("./router/movie.routes");
+const movieRouter = require("./src/router/movie.routes");
 app.use("/movies", movieRouter);
 
 // app.use((req, res, next) => {
