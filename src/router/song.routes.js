@@ -80,7 +80,7 @@ router.delete("/:id", protectRoute, async (req, res, next) => {
 });
 
 router.use((err, req, res, next) => {
-  res.statusCode = err.statusCode;
+  res.statusCode = err.statusCode || 400;
   res.send(`${err}`);
 });
 

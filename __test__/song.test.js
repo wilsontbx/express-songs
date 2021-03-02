@@ -1,6 +1,7 @@
 const request = require("supertest");
 const app = require("../app");
 const SongModel = require("../models/song");
+const UserModel = require("../models/user");
 const dbHandlers = require("../test/dbHandler");
 
 describe("Song", () => {
@@ -17,7 +18,12 @@ describe("Song", () => {
         artist: "artist 2",
       },
     ];
+    const userData = {
+      username: "ash3",
+      password: "iWannaB3DVeryBest",
+    };
     await SongModel.create(songsData);
+    await UserModel.create(userData);
   });
   afterEach(async () => await dbHandlers.clearDatabase());
   afterAll(async () => await dbHandlers.closeDatabase());
@@ -99,9 +105,15 @@ describe("Song", () => {
     expect(response.body).toMatchObject(expectedSongsData);
   });
 
-  // it("POST /able create new song", async () => {
-  //   const song = await SongModel.findOne({ name: "song 1" });
-  //   const response = await request(app).get(`/songs/${song.id}`).expect(200);
-  //   expect(response.body.name).toEqual("song 1");
-  // });
+  it("PUT /not able edit song", async () => {
+    const song = await SongModel.findOne({ name: "song 1" });
+    const response = await request(app).put(`/songs/${song.id}`).expect(400);
+    expect(response.text).toEqual("Error: You are not authorized");
+  });
+
+  it("Delete /not able delete song", async () => {
+    const song = await SongModel.findOne({ name: "song 1" });
+    const response = await request(app).delete(`/songs/${song.id}`).expect(400);
+    expect(response.text).toEqual("Error: You are not authorized");
+  });
 });
